@@ -4,6 +4,8 @@ A [Claude Code](https://claude.ai/code) skill that converts economics PDFs to Ma
 
 Built for economics research: understands paper structure (identification, results, robustness), extracts JEL codes, and has reading strategies for DiD, IV, RDD, RCT, structural estimation, bunching, shift-share, and synthetic control.
 
+Includes a **summarize-paper agent** that reads a full paper and produces a structured summary for literature reviews.
+
 ## Requirements
 
 - [Claude Code](https://claude.ai/code)
@@ -13,13 +15,13 @@ Built for economics research: understands paper structure (identification, resul
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-read-paper.git
+git clone https://github.com/jcduhalde24/claude-read-paper.git
 cd claude-read-paper
 bash install.sh
 ```
 
 The installer will:
-1. Copy files to `~/.claude/tools/` and `~/.claude/commands/`
+1. Copy the skill, script, and agent to `~/.claude/`
 2. Install Python dependencies (`requests`)
 3. Prompt you for your MinerU API key
 
@@ -31,6 +33,7 @@ If you prefer to install manually:
 # Copy files
 cp pdf_to_md.py ~/.claude/tools/
 cp read-paper.md ~/.claude/commands/
+cp summarize-paper.md ~/.claude/agents/
 
 # Install dependencies
 pip install requests
@@ -43,26 +46,33 @@ echo '{"api_key": "your-key-here"}' > ~/.claude/tools/mineru_config.json
 
 ## Usage
 
-In Claude Code:
+### /read-paper skill
+
+Read a paper interactively in Claude Code:
 
 ```
 /read-paper path/to/paper.pdf
 /read-paper https://example.com/working_paper.pdf
 ```
 
-### What it does
-
-1. Converts the PDF to Markdown via MinerU (OCR + formula detection)
-2. Splits the result into sections (abstract, introduction, data, results, etc.)
-3. Caches everything by file hash (repeat reads are instant, zero API calls)
-4. Reads sections on demand based on your question
-
-### Examples
-
+Ask questions like:
 - "What does this paper do?" -- reads abstract + introduction
 - "How do they identify?" -- reads empirical strategy section
 - "Is it robust?" -- reads appendix with robustness checks
 - "Compare these two papers" -- reads key sections from both and synthesizes
+
+### summarize-paper agent
+
+Ask Claude to use the agent on any paper for a structured lit review summary:
+
+```
+Use the summarize-paper agent on Papers/angrist_krueger_1991.pdf
+```
+
+The agent will:
+1. Read the paper section by section (introduction, identification, results, mechanisms, robustness)
+2. Produce a structured summary with: research question, data, identification strategy, main findings (with magnitudes), mechanisms, robustness, limitations, and key takeaway
+3. Save it to `Papers/summaries/<author_year>.md`
 
 ### Language support
 
@@ -89,6 +99,7 @@ The installer detects existing files and asks before overwriting.
 ```bash
 rm ~/.claude/tools/pdf_to_md.py
 rm ~/.claude/commands/read-paper.md
+rm ~/.claude/agents/summarize-paper.md
 rm ~/.claude/tools/mineru_config.json  # optional: keeps your API key
 ```
 

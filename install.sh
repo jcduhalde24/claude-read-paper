@@ -6,6 +6,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TOOLS_DIR="$HOME/.claude/tools"
 COMMANDS_DIR="$HOME/.claude/commands"
+AGENTS_DIR="$HOME/.claude/agents"
 CONFIG_FILE="$TOOLS_DIR/mineru_config.json"
 
 # --- Colors (if terminal supports them) ---
@@ -43,6 +44,7 @@ info "Python $PY_VERSION"
 # --- 2. Create directories ---
 mkdir -p "$TOOLS_DIR"
 mkdir -p "$COMMANDS_DIR"
+mkdir -p "$AGENTS_DIR"
 info "Directories ready"
 
 # --- 3. Copy files ---
@@ -68,6 +70,7 @@ copy_file() {
 
 copy_file "$SCRIPT_DIR/pdf_to_md.py" "$TOOLS_DIR/pdf_to_md.py" "pdf_to_md.py"
 copy_file "$SCRIPT_DIR/read-paper.md" "$COMMANDS_DIR/read-paper.md" "read-paper.md"
+copy_file "$SCRIPT_DIR/summarize-paper.md" "$AGENTS_DIR/summarize-paper.md" "summarize-paper.md (agent)"
 
 # --- 4. Install Python dependencies ---
 echo ""
@@ -107,6 +110,10 @@ echo ""
 echo "Usage in Claude Code:"
 echo "  /read-paper path/to/paper.pdf"
 echo "  /read-paper https://example.com/paper.pdf"
+echo ""
+echo "Agent available:"
+echo "  Ask Claude to use the summarize-paper agent on any PDF"
+echo "  Summaries are saved to Papers/summaries/<author_year>.md"
 echo ""
 echo "To update later: git pull && bash install.sh"
 echo ""
